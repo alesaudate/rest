@@ -1,0 +1,10 @@
+<clientes>
+   <cliente id="1">
+      <nome>Alexandre</nome>
+      <dataNascimento>2012-12-01</dataNascimento>
+   </cliente>
+   <cliente id="2">
+      <nome>Paulo</nome>
+      <dataNascimento>2012-11-01</dataNascimento>
+   </cliente>
+</clientes>

@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>REST</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+		<script type="text/javascript" src="resources/js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript">
+		
+		
+		
+		function incluirUsuario() {
+			
+			$.ajax({
+				type: 'POST',
+				url: '/rest/api/usuario',
+				data: '<usuario><login>' + $('#login').val() + '</login><senha>' + $('#senha').val() + '</senha></usuario>',
+				contentType: 'text/xml',
+				success: function(data) {
+					alert('Usuário cadastrado com sucesso');
+					carregarUsuarios();
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(textStatus);
+				}
+				
+			});
+			
+		}
+		
+		function carregarUsuarios() {
+			$.ajax({
+				type: 'GET',
+				url: '/rest/api/usuario',
+				data: '',
+				contentType: 'text/xml',
+				success: function(data) {
+					$('#usuarios').empty();
+					$(data).find('usuario').each(function() {
+						
+						var nomeUsuario = $(this).find('login').text();
+						$('<li></li>').html(nomeUsuario).appendTo('#usuarios');				
+					});
+					
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(textStatus);
+				}
+				
+			});
+		}
+		
+		
+		</script>
+		
+	</head>
+	<body>
+		<ul id="usuarios">
+		
+		</ul>
+	
+		<fieldset>
+			<legend>Cadastrar novo usuário</legend>
+			<label for="login">Usuário</label>
+			<input type="text" name="login" id="login" />
+			<br />
+			<label for="senha">Senha</label>
+			<input type="password" name="senha" id="senha"/>
+			<br />
+			<input type="button" value="Enviar" onclick="incluirUsuario()" />
+		</fieldset>
+		
+		
+		<script type="text/javascript">
+			carregarUsuarios();
+		</script>
+	</body>
+
+</html>
