@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://brejaonline.com.br/endereco/v1"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://brejaonline.com.br/endereco/v1">
+	
+	<simpleType name="CEP">
+		<restriction base="string">
+			<pattern value="\d{5}-\d{3}" />		
+		</restriction>
+	</simpleType>
+	
+	<complexType name="Endereco">
+		<sequence>
+			<element name="cep" type="tns:CEP" />
+			<element name="logradouro" type="string" />
+		</sequence>
+	</complexType>
+	
+</schema>

@@ -20,6 +20,8 @@
 
 	<modules>
 		<module>cap-01</module>
+		<module>cap-01-cliente</module>
+		<module>cap-04</module>
 	</modules>
 
 
