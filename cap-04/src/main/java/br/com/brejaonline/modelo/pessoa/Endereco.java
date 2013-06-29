@@ -1,4 +1,4 @@
-package br.com.brejaonline.pessoa.v1;
+package br.com.brejaonline.modelo.pessoa;
 
 
 
