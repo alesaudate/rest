@@ -5,6 +5,9 @@ import java.util.Arrays;
 import javax.xml.bind.JAXB;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 
 @XmlRootElement
@@ -26,6 +29,7 @@ public class PessoaFisica
 		PessoaFisica pessoaFisica = new PessoaFisica();
 		pessoaFisica.setCpf("12345678909");
 		pessoaFisica.setNome("Alexandre Saudate");
+		pessoaFisica.setId(1L);
 		
 		Endereco endereco = new Endereco();
 		endereco.setCep("12345-678");
@@ -34,6 +38,9 @@ public class PessoaFisica
 		
 		
 		JAXB.marshal(pessoaFisica, System.out);
+		
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(pessoaFisica));
 		
 	}
     

@@ -1,6 +1,5 @@
 package br.com.brejaonline.modelo.pessoa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
