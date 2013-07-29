@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,9 +15,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.io.IOUtils;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
+import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 
 import br.com.brejaonline.model.Cerveja;
@@ -37,25 +44,7 @@ public class CervejaServlet extends HttpServlet {
 		}
 	}
 
-	// Esse código é apenas para apresentar a escrita de XML
-	/*
-	 * @Override protected void doGet(HttpServletRequest req,
-	 * HttpServletResponse resp) throws ServletException, IOException {
-	 * PrintWriter out = resp.getWriter(); try {
-	 * 
-	 * Marshaller marshaller = context.createMarshaller();
-	 * resp.setContentType("application/xml");
-	 * 
-	 * Cervejas cervejas = new Cervejas(); cervejas.setCervejas(new
-	 * ArrayList<>(estoque.listarCervejas())); marshaller.marshal(cervejas,
-	 * out);
-	 * 
-	 * 
-	 * } catch (Exception e) { resp.sendError(500, e.getMessage()); }
-	 * 
-	 * }
-	 */
-
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -84,22 +73,68 @@ public class CervejaServlet extends HttpServlet {
 				resp.sendError(400, e.getMessage()); //Manda um erro 400 - Bad Request
 			}
 			
-			Unmarshaller unmarshaller = context.createUnmarshaller();
-			Cerveja cerveja = (Cerveja)unmarshaller.unmarshal(req.getInputStream());
-			cerveja.setNome(identificador);
-			String requestURI = req.getRequestURI();
-			resp.setHeader("Location", requestURI);
-			resp.setStatus(201);
+			if (identificador != null && estoque.recuperarCervejaPeloNome(identificador) != null) {
+				resp.sendError(409, "Já existe uma cerveja com esse nome");
+				
+				return ; 
+			}
+			
+			String tipoDeConteudo = req.getContentType();
+			
+			
+			
+			if (tipoDeConteudo.startsWith("text/xml") || tipoDeConteudo.startsWith("application/xml")) {
+				
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					Cerveja cerveja = (Cerveja)unmarshaller.unmarshal(req.getInputStream());
+					cerveja.setNome(identificador);
+					estoque.adicionarCerveja(cerveja);
+					String requestURI = req.getRequestURI();
+					resp.setHeader("Location", requestURI);
+					resp.setStatus(201);
+					escreveXML(req, resp);
+				}
+			else if (tipoDeConteudo.startsWith("application/json")){
+					
+
+					List<String> lines = IOUtils.readLines(req.getInputStream());
+					StringBuilder builder = new StringBuilder();
+					for (String line : lines) {
+						builder.append(line);
+					}
+					
+					MappedNamespaceConvention con = new MappedNamespaceConvention();
+					JSONObject jsonObject = new JSONObject(builder.toString());
+					
+					XMLStreamReader xmlStreamReader = new MappedXMLStreamReader(jsonObject, con);
+
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					Cerveja cerveja = (Cerveja)unmarshaller.unmarshal(xmlStreamReader);
+					
+					cerveja.setNome(identificador);
+					estoque.adicionarCerveja(cerveja);
+					String requestURI = req.getRequestURI();
+					resp.setHeader("Location", requestURI);
+					resp.setStatus(201);
+					
+					escreveJSON(req, resp);
+					
+				}
+			else {
+					resp.sendError(415);
+			}
+			
 		}
-		catch (JAXBException e ) {
+		catch (Exception e ) {
 			resp.sendError(500, e.getMessage());
-		}
+		} 
 	}
 	
 	
 	
 	private String obtemIdentificador(HttpServletRequest req) throws RecursoSemIdentificadorException {
 		String requestUri = req.getRequestURI();
+		
 		String[] pedacosDaUri = requestUri.split("/");
 		
 		boolean contextoCervejasEncontrado = false;
@@ -119,21 +154,13 @@ public class CervejaServlet extends HttpServlet {
 		throw new RecursoSemIdentificadorException("Recurso sem identificador");
 		
 	}
+	
+	
 
 	private void escreveXML(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		Object objetoAEscrever = null;
-		
-		try {
-			String identificador = obtemIdentificador(req);
-			objetoAEscrever = estoque.recuperarCervejaPeloNome(identificador);
-		}
-		catch (RecursoSemIdentificadorException e) {
-			Cervejas cervejas = new Cervejas();
-			cervejas.setCervejas(new ArrayList<>(estoque.listarCervejas()));
-			objetoAEscrever = cervejas;
-		}
+		Object objetoAEscrever = localizaObjetoASerEnviado(req);
 		
 		if (objetoAEscrever == null) {
 			resp.sendError(404);
@@ -141,7 +168,7 @@ public class CervejaServlet extends HttpServlet {
 		}
 		
 		try {
-			resp.setContentType("application/xml");
+			resp.setContentType("application/xml;charset=UTF-8");
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(objetoAEscrever, resp.getWriter());
 
@@ -151,20 +178,25 @@ public class CervejaServlet extends HttpServlet {
 
 	}
 
-	private void escreveJSON(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-
-		Object objetoAEscrever = null;
+	private Object localizaObjetoASerEnviado(HttpServletRequest req) {
+		Object objeto = null;
 		
 		try {
 			String identificador = obtemIdentificador(req);
-			objetoAEscrever = estoque.recuperarCervejaPeloNome(identificador);
+			objeto = estoque.recuperarCervejaPeloNome(identificador);
 		}
 		catch (RecursoSemIdentificadorException e) {
 			Cervejas cervejas = new Cervejas();
 			cervejas.setCervejas(new ArrayList<>(estoque.listarCervejas()));
-			objetoAEscrever = cervejas;
+			objeto = cervejas;
 		}
+		return objeto;
+	}
+
+	private void escreveJSON(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+
+		Object objetoAEscrever = localizaObjetoASerEnviado(req);
 		
 		if (objetoAEscrever == null) {
 			resp.sendError(404);
@@ -172,7 +204,7 @@ public class CervejaServlet extends HttpServlet {
 		}
 		
 		try {
-			resp.setContentType("application/json");
+			resp.setContentType("application/json;charset=UTF-8");
 			MappedNamespaceConvention con = new MappedNamespaceConvention();
 
 			XMLStreamWriter xmlStreamWriter = new MappedXMLStreamWriter(con,
