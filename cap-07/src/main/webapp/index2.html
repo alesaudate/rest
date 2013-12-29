@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">	
+		<title>Cervejaria REST</title>
+		<script src="jquery-1.10.2.min.js"></script>
+		<script src="json.js"></script>
+<script type="text/javascript">
+
+	host = "http://localhost:8080/cervejaria/services/";
+	function listarCervejas() {
+		$.ajax({
+			url : host + 'cervejas',
+			type : 'GET',
+			success : function(data) {
+				$('#grid tr:gt(0)').remove();
+				console.log(data);
+
+				if ($.isArray(data.cervejas.link)) {
+					for ( var i = 0; i < data.cervejas.link.length; i++) {
+						var link = data.cervejas.link[i]['@href'];
+						segueLinkCerveja(link);
+					}
+				} else {
+					var link = data.cervejas.link['@href'];
+					segueLinkCerveja(link);
+				}
+			},
+			error : function(data) {
+				alert(data);
+			}
+
+		});
+	}
+	
+	function segueLinkCerveja(link) {
+		$.ajax({
+			url : host + link,
+			type : 'GET',
+			success : function(data) {
+				adicionaCervejaNovaAoGrid(data.cerveja);
+			},
+			error : function(data) {
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);
+			}
+		});
+	}
+
+	function adicionaCervejaNovaAoGrid(cerveja) {
+
+		var data = "<tr>"
+				+ "<td>"
+				+ cerveja.nome
+				+ "</td>"
+				+ "<td>"
+				+ cerveja.cervejaria
+				+ "</td>"
+				+ "<td>"
+				+ cerveja.descricao
+				+ "</td>"
+				+ "<td>"
+				+ cerveja.tipo
+				+ "</td>"
+				+ "<td><input type=\"button\" value=\"Apagar\" onclick=\"apagaCerveja('"
+				+ cerveja.nome + "');\" /></td>" + "</tr>";
+
+		$("#grid").append(data);
+
+	}
+
+	function adicionaCerveja() {
+
+		var data = $("#criarCervejaForm").serializeJSON();
+		data = "{\"cerveja\":" + JSON.stringify(data) + "}";
+
+		$
+				.ajax({
+					url : host + 'cervejas',
+					type : 'POST',
+					contentType : 'application/json',
+					data : data,
+					success : function(data) {
+						$("#criarCervejaForm")[0].reset();
+						listarCervejas();
+					},
+					error : function(data) {
+						console.log(data);
+						alert("Ocorreu um erro: " + data.status + " "
+								+ data.statusText);
+					}
+				});
+
+	}
+
+	function apagaCerveja(id) {
+		$
+				.ajax({
+					url : host + 'cervejas/' + id,
+					type : 'DELETE',
+					success : function(data) {
+						listarCervejas();
+					},
+					error : function(data) {
+						console.log(data);
+						alert("Ocorreu um erro: " + data.status + " "
+								+ data.statusText);
+					}
+				});
+
+	}
+</script>
+</head>
+<body>
+
+
+	<fieldset>
+		<legend>Criar nova cerveja</legend>
+		<form id="criarCervejaForm">
+			<label>Nome</label> 
+			<input type="text" name="nome" /> 
+			<br /> 
+			<label>Cervejaria</label>
+			<input type="text" name="cervejaria" /> 
+			<br /> 
+			<label>Descrição</label>
+			<input type="text" name="descricao" /> 
+			<br /> 
+			<label>Tipo</label> 
+			<select name="tipo">
+				<option value="LAGER" selected="selected">Lager</option>
+				<option value="PILSEN">Pilsen</option>
+				<option value="BOCK">Bock</option>
+				<option value="WEIZEN">Weizen</option>
+			</select> 
+			<input type="button" value="Criar" onclick="adicionaCerveja();" />
+
+		</form>
+	</fieldset>
+
+	<fieldset>
+		<legend>Listagem de cervejas</legend>
+		<table id="grid">
+			<thead>
+				<tr>
+					<th>Nome</th>
+					<th>Cervejaria</th>
+					<th>Descrição</th>
+					<th>Tipo</th>
+					<th>Opções</th>
+				</tr>
+			</thead>
+			<tr>
+				<td colspan="5">Carregando...</td>
+			</tr>
+		</table>
+	</fieldset>
+
+	<script type="text/javascript">
+		listarCervejas();
+	</script>
+
+</body>
+</html>
