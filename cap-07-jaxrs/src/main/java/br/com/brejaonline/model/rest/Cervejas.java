@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import br.com.brejaonline.client.Constants;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Cervejas {
@@ -21,7 +23,7 @@ public class Cervejas {
 
 		for (CustomLink link : this.links) {
 
-			Link newLink = Link.fromUri("http://localhost:8080/cervejaria/" +link.getHref())
+			Link newLink = Link.fromUri(Constants.HOST +link.getHref())
 					.rel(link.getRel()).title(link.getTitle()).build();
 
 			links.add(newLink);
