@@ -39,7 +39,7 @@ public class CervejaService {
 
 	private static Estoque estoque = new Estoque();
 
-	private static final int TAMANHO_PAGINA = 1;
+	private static final int TAMANHO_PAGINA = 10;
 
 	@GET
 	@Path("{nome}")
@@ -62,10 +62,10 @@ public class CervejaService {
 
 	@POST
 	public Response criarCerveja(Cerveja cerveja) {
+		
 		try {
 			estoque.adicionarCerveja(cerveja);
-		}
-		catch (CervejaJaExisteException e) {
+		} catch (CervejaJaExisteException e) {
 			throw new WebApplicationException(Status.CONFLICT);
 		}
 
