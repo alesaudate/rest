@@ -20,12 +20,12 @@ public class Cliente {
 
 		Client client = ClientBuilder.newClient();
 
-		/*List<Cerveja> cervejas = recuperarCervejas(client
+		List<Cerveja> cervejas = recuperarCervejas(client
 				.target(Constants.HOST));
 
 		for (Cerveja cerveja : cervejas) {
 			System.out.println(cerveja.getNome());
-		}*/
+		}
 
 	}
 
@@ -35,12 +35,12 @@ public class Cliente {
 
 		List<Cerveja> cervejaList = new ArrayList<>();
 
-		/*for (Link link : cervejas.getLinks()) {
+		for (Link link : cervejas.getLinks()) {
 			Cerveja cerveja = ClientBuilder.newClient()
 					.register(JettisonFeature.class).invocation(link)
 					.accept(MediaType.APPLICATION_JSON).get(Cerveja.class);
 			cervejaList.add(cerveja);
-		}*/
+		}
 		return cervejaList;
 	}
 
