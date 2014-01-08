@@ -21,10 +21,15 @@ public class Cervejas {
 	public List<Link> getLinks() {
 		List<Link> links = new ArrayList<>();
 
-		for (CustomLink link : this.links) {
+		for (CustomLink customLink : this.links) {
 
-			Link newLink = Link.fromUri(Constants.HOST +link.getHref())
-					.rel(link.getRel()).title(link.getTitle()).build();
+			Link newLink = 
+					 // É necessário inserir o host, pois os links retornados pelo servidor 
+			         // são relativos, i.e., não têm essa informação
+					Link.fromUri(Constants.HOST + customLink.getHref())
+					.rel(customLink.getRel())
+					.title(customLink.getTitle())
+					.build();
 
 			links.add(newLink);
 		}

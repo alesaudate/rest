@@ -1,15 +1,22 @@
 package br.com.brejaonline.model.rest;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomLink {
 
+	@XmlAttribute
 	private String href;
+	
+	@XmlAttribute
 	private String rel;
+	
+	@XmlAttribute
 	private String title;
 	
 	
-	@XmlAttribute
 	public String getHref() {
 		return href;
 	}
@@ -17,7 +24,6 @@ public class CustomLink {
 		this.href = href;
 	}
 	
-	@XmlAttribute
 	public String getRel() {
 		return rel;
 	}
@@ -25,7 +31,6 @@ public class CustomLink {
 		this.rel = rel;
 	}
 	
-	@XmlAttribute
 	public String getTitle() {
 		return title;
 	}
