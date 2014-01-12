@@ -54,9 +54,9 @@ public class CervejaService {
 
 	@GET
 	public Cervejas listeTodasAsCervejas(@QueryParam("pagina") int pagina) {
-
+		
 		List<Cerveja> cervejas = estoque.listarCervejas(pagina, TAMANHO_PAGINA);
-
+		
 		return new Cervejas(cervejas);
 	}
 
