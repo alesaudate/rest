@@ -7,8 +7,9 @@
 	<packaging>pom</packaging>
 
 	<description>
-		Estes projetos contém o  código-fonte do livro "REST" (título provisório). Cada sub-módulo contém o 
-		código relativo a um capítulo do livro.
+		Estes projetos contém o  código-fonte do livro "REST: Construa API's inteligentes de maneira simples". 
+		
+		Cada sub-módulo contém o código relativo a um capítulo do livro (em alguns casos, mais de um módulo por capítulo)
 	</description>
 
 	<developers>
@@ -22,6 +23,11 @@
 		<module>cap-01</module>
 		<module>cap-01-cliente</module>
 		<module>cap-04</module>
+		<module>cap-05</module>
+		<module>cap-06</module>
+		<module>cap-07-server</module>
+		<module>cap-07-jaxrs</module>
+		<module>cap-07-resteasy</module>
 	</modules>
 
 
@@ -56,7 +62,7 @@
 					<stopKey>foo</stopKey>
 					<stopPort>9999</stopPort>
 					<webApp>
-						<contextPath>/cervejaria</contextPath>
+						<contextPath>/</contextPath>
 					</webApp>
 					
 				</configuration>
