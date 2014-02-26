@@ -28,6 +28,8 @@
 		<module>cap-07-server</module>
 		<module>cap-07-jaxrs</module>
 		<module>cap-07-resteasy</module>
+		<module>cap-08-ssl</module>
+		<module>cap-08-oauth</module>
 	</modules>
 
 
