@@ -30,6 +30,7 @@
 		<module>cap-07-resteasy</module>
 		<module>cap-08-ssl</module>
 		<module>cap-08-oauth</module>
+		<module>cap-08-oauth-server</module>
 	</modules>
 
 
