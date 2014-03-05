@@ -6,15 +6,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.glassfish.jersey.jettison.JettisonFeature;
 import org.glassfish.jersey.server.oauth1.DefaultOAuth1Provider;
 import org.glassfish.jersey.server.oauth1.OAuth1ServerFeature;
 import org.glassfish.jersey.server.oauth1.OAuth1ServerProperties;
-
-import br.com.brejaonline.model.Usuario;
 
 
 public class ApplicationJAXRS extends Application{
@@ -32,8 +29,11 @@ public class ApplicationJAXRS extends Application{
 	public Set<Object> getSingletons() {
 		
 		DefaultOAuth1Provider provider = new DefaultOAuth1Provider();
-		provider.registerConsumer("Alexandre", "123", "123", new MultivaluedStringMap());
+		String IDDoConsumidor = "App consumidora";
+		String consumerKey = "123";
+		String consumerSecret = "123";
 		
+		provider.registerConsumer(IDDoConsumidor, consumerKey, consumerSecret, new MultivaluedStringMap());
 		
 		
 		

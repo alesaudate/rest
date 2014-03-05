@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,21 +21,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
-
-import org.glassfish.jersey.oauth1.signature.OAuth1Parameters;
-import org.glassfish.jersey.oauth1.signature.OAuth1Secrets;
-import org.glassfish.jersey.oauth1.signature.OAuth1Signature;
-import org.glassfish.jersey.oauth1.signature.OAuth1SignatureException;
-import org.glassfish.jersey.server.oauth1.OAuth1Provider;
-import org.glassfish.jersey.server.oauth1.OAuth1Token;
-import org.glassfish.jersey.server.oauth1.internal.OAuthServerRequest;
 
 import br.com.brejaonline.model.Cerveja;
 import br.com.brejaonline.model.CervejaJaExisteException;
@@ -46,16 +38,12 @@ import br.com.brejaonline.model.rest.Cervejas;
 		MediaType.APPLICATION_JSON })
 @Produces({ MediaType.TEXT_XML, MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON })
+
 public class CervejaService {
 
 	private static Estoque estoque = new Estoque();
 
 	private static final int TAMANHO_PAGINA = 10;
-	
-	
-	
-	
-	
 	
 	@Context
 	private SecurityContext context;
@@ -64,11 +52,17 @@ public class CervejaService {
 
 	@GET
 	@Path("{nome}")
+	
 	public Cerveja encontreCerveja(@PathParam("nome") String nomeDaCerveja) {
 		
 		Principal principal = context.getUserPrincipal();
-		String nomeDoUsuario = principal != null ? principal.getName() : null;
+		String nomeDoUsuario = null;
 		
+		if (principal != null) {
+			nomeDoUsuario = principal.getName();
+		}
+		
+		System.out.println("Quem está acessando? " + nomeDoUsuario);
 		
 		Cerveja cerveja = estoque.recuperarCervejaPeloNome(nomeDaCerveja);
 		if (cerveja != null)

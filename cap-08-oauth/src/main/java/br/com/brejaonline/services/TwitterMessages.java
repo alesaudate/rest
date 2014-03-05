@@ -1,17 +1,18 @@
 package br.com.brejaonline.services;
 
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.MatrixParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -26,23 +27,42 @@ import br.com.brejaonline.model.twitter.Statuses;
 public class TwitterMessages {
 
 	@GET
-	public Statuses list(@Context HttpServletRequest req) {
+	public Response list(@Context HttpServletRequest req,
+			@Context HttpServletResponse resp) throws URISyntaxException {
 
 		AccessToken token = (AccessToken) req
 				.getAttribute(TwitterLoginFilter.ACCESS_TOKEN_KEY);
 		Client client = TwitterOAuthFlowService.getClient(token);
 
-		Response response = client
-				.target("https://api.twitter.com/1.1/statuses/home_timeline.json")
-				.request().get();
-		
-		List<Status> statusList = response.readEntity(new GenericType<List<Status>>() {});
-		Statuses status = new Statuses();
-		
-		status.setStatusCollection(statusList);
-		
-		return status;
-		
+		try {
+			Response response = client
+					.target("https://api.twitter.com/1.1/statuses/home_timeline.json")
+					.request().get();
+
+			
+			
+			
+			Status[] statusList = response
+					.readEntity(Status[].class);
+			Statuses status = new Statuses();
+
+			status.setStatusCollection(Arrays.asList(statusList));
+
+			return Response.ok(status).build();
+
+		} catch (WebApplicationException ex) {
+			if (ex.getResponse().getStatus() == Response.Status.UNAUTHORIZED
+					.getStatusCode()) {
+
+				String twitterAuthUri = TwitterOAuthFlowService
+						.reissueAuthorization(req, resp);
+				return Response.temporaryRedirect(new URI(twitterAuthUri))
+						.build();
+
+			} else {
+				throw ex;
+			}
+		}
 
 	}
 

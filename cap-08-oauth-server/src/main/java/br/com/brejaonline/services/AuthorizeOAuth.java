@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -31,11 +32,11 @@ public class AuthorizeOAuth {
 	private DefaultOAuth1Provider provider;
 	
 	
-	private static String authorizeForm;
+	private static final String AUTHORIZE_FORM;
 	
 	static {
 		try {
-			authorizeForm = IOUtils.toString(AuthorizeOAuth.class.getResourceAsStream("/login.html"));
+			AUTHORIZE_FORM = IOUtils.toString(AuthorizeOAuth.class.getResourceAsStream("/login.html"));
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
@@ -45,30 +46,32 @@ public class AuthorizeOAuth {
 	
 	@GET
 	@Produces(TEXT_HTML)
-	public Response beginAuthorization(@QueryParam("oauth_token") String token) throws URISyntaxException {
-		String htmlForm = authorizeForm.replace("$$$OAUTH_TOKEN$$$", token);
+	public String beginAuthorization(@QueryParam("oauth_token") String token) throws URISyntaxException {
+		String htmlForm = AUTHORIZE_FORM.replace("$$$OAUTH_TOKEN$$$", token);
 		
-		return Response.ok(htmlForm).build();
+		return htmlForm;
 		
 	}
 	
 	
 	
 	@POST
-	@Path("/authorized")
 	public Response authorizeApp(@FormParam("oauth_token") String token, 
-		@FormParam("username") final String usuario,
+		@FormParam("username") String usuario,
 		@FormParam("password") String senha) throws URISyntaxException {
 		
-		Token requestToken = (Token)provider.getRequestToken(token);
+		final Token requestToken = provider.getRequestToken(token);
+		
+		Set<String> roles = new HashSet<>();
+		roles.add("Leitura");
 		
 		String verifier = provider.authorizeToken(requestToken, new Principal() {
 			
 			@Override
 			public String getName() {
-				return usuario;
+				return provider.getConsumer(requestToken.getConsumer().getKey()).getOwner();
 			}
-		}, new HashSet<String>());
+		}, roles);
 		
 		StringBuilder callbackUrl = new StringBuilder(requestToken.getCallbackUrl());
 		if (callbackUrl.toString().contains("?")) {

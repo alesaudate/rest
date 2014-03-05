@@ -18,10 +18,11 @@ import org.glassfish.jersey.client.oauth1.AccessToken;
 @WebFilter("/services/twitter/*")
 public class TwitterLoginFilter implements Filter {
 
-	private static final String OAUTH_VERIFIER = "oauth_verifier";
-	private static final String OAUTH_TOKEN_FIELD = "oauth_token";
-	private static final String TOKEN_COOKIE = "TwitterAccessToken";
-	private static final String TOKEN_COOKIE_SECRET = "TwitterAccessTokenSecret";
+	public static final String OAUTH_VERIFIER = "oauth_verifier";
+	public static final String TOKEN_COOKIE = "TwitterAccessToken";
+	public static final String TOKEN_COOKIE_SECRET = "TwitterAccessTokenSecret";
+	
+	public static final String EMPTY_COOKIE = "empty";
 
 	public static final String ACCESS_TOKEN_KEY = "AccessToken";
 
@@ -31,24 +32,17 @@ public class TwitterLoginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse resp = (HttpServletResponse) response;
 
-		AccessToken accessToken = getAccessToken(req);
+		org.glassfish.jersey.client.oauth1.AccessToken accessToken = recuperaAccessTokenDosCookies(req);
 
 		if (accessToken == null) {
 
 			String verifier = req.getParameter(OAUTH_VERIFIER);
-			String token = req.getParameter(OAUTH_TOKEN_FIELD);
+			String token = req.getParameter(TwitterOAuthFlowService.OAUTH_TOKEN_FIELD);
 
 			if (verifier != null && token != null) {
 				accessToken = TwitterOAuthFlowService.verify(token, verifier,req);
 				
-				Cookie accessTokenCookie = new Cookie(TOKEN_COOKIE, accessToken.getToken());
-				accessTokenCookie.setPath("/");
-				
-				Cookie accessTokenSecretCookie = new Cookie(TOKEN_COOKIE_SECRET, accessToken.getAccessTokenSecret());
-				accessTokenSecretCookie.setPath("/");
-				
-				resp.addCookie(accessTokenCookie);
-				resp.addCookie(accessTokenSecretCookie);
+				ajustaCookiesNaResposta(resp, accessToken);
 			} else {
 				String twitterAuthUri = TwitterOAuthFlowService.init(req);
 				resp.sendRedirect(twitterAuthUri);
@@ -58,6 +52,18 @@ public class TwitterLoginFilter implements Filter {
 		req.setAttribute(ACCESS_TOKEN_KEY, accessToken);
 		chain.doFilter(req, resp);
 
+	}
+
+	private void ajustaCookiesNaResposta(HttpServletResponse resp,
+			AccessToken accessToken) {
+		Cookie accessTokenCookie = new Cookie(TOKEN_COOKIE, accessToken.getToken());
+		accessTokenCookie.setPath("/");
+		
+		Cookie accessTokenSecretCookie = new Cookie(TOKEN_COOKIE_SECRET, accessToken.getAccessTokenSecret());
+		accessTokenSecretCookie.setPath("/");
+		
+		resp.addCookie(accessTokenCookie);
+		resp.addCookie(accessTokenSecretCookie);
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public class TwitterLoginFilter implements Filter {
 
 	}
 
-	protected AccessToken getAccessToken(HttpServletRequest req) {
+	protected AccessToken recuperaAccessTokenDosCookies(HttpServletRequest req) {
 
 		String accessToken = null;
 		String accessTokenSecret = null;
@@ -80,9 +86,13 @@ public class TwitterLoginFilter implements Filter {
 		Cookie[] cookies = req.getCookies();
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(TOKEN_COOKIE)) {
-				accessToken = cookie.getValue();
+				if (!cookie.getValue().equals(EMPTY_COOKIE)) {
+					accessToken = cookie.getValue();
+				}
 			} else if (cookie.getName().equals(TOKEN_COOKIE_SECRET)) {
-				accessTokenSecret = cookie.getValue();
+				if (!cookie.getValue().equals(EMPTY_COOKIE)) {
+					accessTokenSecret = cookie.getValue();
+				}
 			}
 		}
 

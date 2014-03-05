@@ -1,5 +1,6 @@
 package br.com.brejaonline.services;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
@@ -14,10 +15,10 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 
 public class TwitterOAuthFlowService {
 
-	private static final String OAUTH_TOKEN_FIELD = "oauth_token";
+	public static final String OAUTH_TOKEN_FIELD = "oauth_token";
 
-	private static final String CONSUMER_KEY = "UG1m0chGRhvM5TcEMadoPg";
-	private static final String CONSUMER_SECRET = "kCvr1HSgtQj1yHeFBSuiFACFcfxhuQuNVBePwijM";
+	private static final String CONSUMER_KEY = "99viW3aGuXaCjcCmgBCOA";
+	private static final String CONSUMER_SECRET = "UHgI9BgC5gFsxSlh2SRfZppQEQnaetQ1Ts42c4r6O68";
 
 	public static String init(HttpServletRequest req) {
 
@@ -39,6 +40,7 @@ public class TwitterOAuthFlowService {
 						"https://api.twitter.com/oauth/request_token", 
 						"https://api.twitter.com/oauth/access_token", 
 						"https://api.twitter.com/oauth/authorize")
+				
 				.callbackUri(callbackHost)
 				.build();
 
@@ -79,6 +81,22 @@ public class TwitterOAuthFlowService {
 
 		return client;
 
+	}
+	
+	public static String reissueAuthorization(HttpServletRequest req, HttpServletResponse resp ) {
+		
+		String redirectURL = init(req);
+		
+		Cookie accessTokenCookie = new Cookie(TwitterLoginFilter.TOKEN_COOKIE, TwitterLoginFilter.EMPTY_COOKIE);
+		accessTokenCookie.setPath("/");
+		
+		Cookie accessTokenSecretCookie = new Cookie(TwitterLoginFilter.TOKEN_COOKIE_SECRET, TwitterLoginFilter.EMPTY_COOKIE);
+		accessTokenSecretCookie.setPath("/");
+		
+		resp.addCookie(accessTokenCookie);
+		resp.addCookie(accessTokenSecretCookie);
+		
+		return redirectURL;
 	}
 
 }
