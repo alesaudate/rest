@@ -1,14 +1,9 @@
 package br.com.brejaonline.services;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,7 +14,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,6 +22,7 @@ import javax.ws.rs.core.UriBuilder;
 import br.com.brejaonline.model.Cerveja;
 import br.com.brejaonline.model.CervejaJaExisteException;
 import br.com.brejaonline.model.Estoque;
+import br.com.brejaonline.model.Imagem;
 import br.com.brejaonline.model.rest.Cervejas;
 
 @Path("/cervejas")
@@ -39,7 +34,7 @@ public class CervejaService {
 
 	private static Estoque estoque = new Estoque();
 
-	private static final int TAMANHO_PAGINA = 10;
+	private static final int TAMANHO_PAGINA = 1;
 
 	@GET
 	@Path("{nome}")
@@ -94,43 +89,19 @@ public class CervejaService {
 	@Produces("image/*")
 	public Response recuperaImagem(@PathParam("nome") String nomeDaCerveja)
 			throws IOException {
-		InputStream is = CervejaService.class.getResourceAsStream("/"
-				+ nomeDaCerveja + ".jpg");
-
-		if (is == null)
-			throw new WebApplicationException(Status.NOT_FOUND);
-
-		byte[] dados = new byte[is.available()];
-		is.read(dados);
-		is.close();
-
-		return Response.ok(dados).type("image/jpg").build();
+		
+		Cerveja cerveja = new Cerveja();
+		cerveja.setNome(nomeDaCerveja);
+		
+		return Response.ok(cerveja).type("image/jpg").build();
 	}
 
-	private static Map<String, String> EXTENSOES;
-
-	static {
-		EXTENSOES = new HashMap<>();
-		EXTENSOES.put("image/jpg", ".jpg");
-	}
-
+	
 	@POST
-	@Path("{nome}")
 	@Consumes("image/*")
-	public Response criaImagem(@PathParam("nome") String nomeDaImagem,
-			@Context HttpServletRequest req, byte[] dados) throws IOException,
+	public Response criaImagem(Imagem imagem) throws IOException,
 			InterruptedException {
-
-		String userHome = System.getProperty("user.home");
-		String mimeType = req.getContentType();
-		FileOutputStream fos = new FileOutputStream(userHome
-				+ java.io.File.separator + nomeDaImagem
-				+ EXTENSOES.get(mimeType));
-
-		fos.write(dados);
-		fos.flush();
-		fos.close();
-
+		imagem.salvar(System.getProperty("user.home"));
 		return Response.ok().build();
 	}
 

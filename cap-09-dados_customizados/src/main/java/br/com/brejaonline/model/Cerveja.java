@@ -36,8 +36,6 @@ public class Cerveja {
 		this.nome = nome;
 	}
 	
-	
-	
 	public String getDescricao() {
 		return descricao;
 	}
