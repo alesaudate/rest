@@ -11,6 +11,6 @@
 
 	<servlet-mapping>
 		<servlet-name>br.com.brejaonline.services.ApplicationJAXRS</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/services/*</url-pattern>
 	</servlet-mapping>
 </web-app>
