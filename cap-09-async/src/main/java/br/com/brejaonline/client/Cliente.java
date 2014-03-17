@@ -40,7 +40,7 @@ public class Cliente {
 				.request()
 				.get();
 		
-		System.out.println("Resposta do segundo tipo:");
+		System.out.println("Status da resposta:");
 		System.out.println(response.getStatus());
 		String expires = response.getHeaderString("Expires");
 		System.out.println("Retornar a requisição em " + expires);

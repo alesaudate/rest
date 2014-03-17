@@ -32,13 +32,8 @@ public class EntityCache {
 				return true;
 			}
 			
-			
-			
 			long tempoArmazenado = pair.getDate().getTime() / INTERVALO_CEGO;
 			long tempoFornecido = since.getTime() / INTERVALO_CEGO;
-			
-			System.out.println("Data fornecida: " + tempoFornecido);
-			System.out.println("Data armazenada: " + tempoArmazenado);
 			
 			//se a data armazenada é posterior à data passada como parâmetro,
 			//significa que o objeto foi alterado

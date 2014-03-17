@@ -4,13 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
-
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Email {
 
 	private String mensagem = "";
@@ -30,44 +24,6 @@ public class Email {
 	public static final String SEPARADOR_ENDERECOS = ",";
 	
 	public static final String FORMATO_PADRAO = "text/plain";
-	
-	public Email() {}
-	
-	public Email(String mensagem, String formatoMensagem, String assunto, String destinatarios, String comCopia, String comCopiaOculta) {
-		this(mensagem, 
-				formatoMensagem,
-				assunto,
-				destinatarios != null ? 
-						(List<String>)Arrays.asList(destinatarios.split(SEPARADOR_ENDERECOS)) 
-						: new ArrayList<String>(), 
-				comCopia != null ? 
-						(List<String>)Arrays.asList(comCopia.split(SEPARADOR_ENDERECOS)) 
-						: new ArrayList<String>(), 
-				comCopiaOculta != null ? 
-						(List<String>)Arrays.asList(comCopiaOculta.split(SEPARADOR_ENDERECOS)) 
-						: new ArrayList<String>()
-		);
-	}
-
-	public Email(String mensagem, String formatoMensagem,
-			String assunto,
-			List<String> destinatarios, List<String> comCopia,
-			List<String> comCopiaOculta) {
-		this.mensagem = mensagem != null ? mensagem : "";
-		this.formatoMensagem = formatoMensagem != null ? formatoMensagem : FORMATO_PADRAO;
-		if (destinatarios != null) {
-			this.destinatarios = destinatarios;
-		}
-		if (comCopia != null) {
-			this.comCopia = comCopia ;
-		}
-		if (comCopiaOculta != null) {
-			this.comCopiaOculta = comCopiaOculta;	
-		}
-	}
-	
-	
-	
 	
 	public Email withMensagem(String mensagem, String formato) {
 		if (mensagem != null && formato != null) {

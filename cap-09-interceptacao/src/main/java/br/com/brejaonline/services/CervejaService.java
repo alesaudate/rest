@@ -148,7 +148,8 @@ public class CervejaService {
 
 	private void testaETag(String eTag, String nomeCerveja) {
 		Response responseEncontraCerveja = encontreCerveja(nomeCerveja);
-
+		
+		
 		if (StringUtils.isNotEmpty(eTag)
 				&& !responseEncontraCerveja.getEntityTag().getValue()
 						.equals(eTag)) {

@@ -1,12 +1,12 @@
 package br.com.brejaonline.client;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -30,11 +30,11 @@ public class Cliente {
 
 		
 		MultiPart multiPart = new MultiPart();
+		URI uriDoArquivo = Cliente.class.getResource("/Erdinger Weissbier.jpg").toURI();
+		File arquivo = new File(uriDoArquivo);
 		multiPart.bodyPart("Mensagem com anexos", MediaType.TEXT_PLAIN_TYPE)
 				.bodyPart(
-						new FileDataBodyPart("imagem",
-								new File(Cliente.class.getResource(
-										"/Erdinger Weissbier.jpg").toURI())));
+						new FileDataBodyPart("imagem",arquivo));
 		
 		ClientBuilder
 		.newClient()

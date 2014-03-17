@@ -21,7 +21,5 @@ public class Anexo {
 		return "Anexo [conteudo=" + Arrays.toString(conteudo)
 				+ ", tipoDeConteudo=" + tipoDeConteudo + "]";
 	}
-	
-	
 
 }

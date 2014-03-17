@@ -24,15 +24,15 @@ public class EmailService {
 			@HeaderParam("Cc") String comCopia,
 			@HeaderParam("Bcc") String comCopiaOculta, 
 			@HeaderParam("Subject") String assunto,
-			String conteudo,
+			String mensagem,
 			@Context HttpHeaders httpHeaders) {
 
-		Email email = new Email(conteudo,
-				httpHeaders.getMediaType().toString(),
-				assunto,
-				para, 
-				comCopia,
-				comCopiaOculta);
+		Email email = new Email()
+			.withDestinatario(para)
+			.withComCopia(comCopia)
+			.withComCopiaOculta(comCopiaOculta)
+			.withAssunto(assunto)
+			.withMensagem(mensagem, httpHeaders.getMediaType().toString());
 		email.enviar();
 	
 	}

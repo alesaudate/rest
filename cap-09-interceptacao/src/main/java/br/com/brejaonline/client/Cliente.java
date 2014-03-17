@@ -19,28 +19,24 @@ public class Cliente {
 
 		Response response = client
 				.target("http://localhost:8080/cervejaria/services")
-				.path("/cervejas")
-				.request(MediaType.APPLICATION_XML)
-				.get();
+				.path("/cervejas").request(MediaType.APPLICATION_XML).get();
 
 		Date responseDate = new Date();
-		
-		
-		System.out.println(response.getStatus());
-		
+		System.out.println("Código: " + response.getStatus());
+
 		Cervejas cervejas = response.readEntity(Cervejas.class);
-		
-		System.out.println(cervejas);
-		
-		
-		response = client
-				.target("http://localhost:8080/cervejaria/services")
-				.path("/cervejas")
-				.request(MediaType.APPLICATION_XML)
-				.header("If-Modified-Since", responseDate)
-				.get();
-		
-		System.out.println(response.getStatus());
+
+		System.out.println("Resultado: " + cervejas);
+
+		response = client.target("http://localhost:8080/cervejaria/services")
+				.path("/cervejas").request(MediaType.APPLICATION_XML)
+				.header("If-Modified-Since", responseDate).get();
+
+		System.out.println("Código: " + response.getStatus());
+
+		cervejas = response.readEntity(Cervejas.class);
+
+		System.out.println("Resultado: " + cervejas);
 
 	}
 

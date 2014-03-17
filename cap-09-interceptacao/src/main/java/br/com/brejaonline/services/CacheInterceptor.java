@@ -9,11 +9,10 @@ import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.lang.StringUtils;
 import org.glassfish.jersey.message.internal.DateProvider;
 
-@Provider
 @Cached
 public class CacheInterceptor implements ContainerRequestFilter, ContainerResponseFilter {
 
@@ -36,7 +35,7 @@ public class CacheInterceptor implements ContainerRequestFilter, ContainerRespon
 		if (requestContext.getMethod().equals("GET")) {
 			String unparsedDate = requestContext
 					.getHeaderString("If-Modified-Since");
-			if (unparsedDate != null && !unparsedDate.trim().equals("")) {
+			if (StringUtils.isNotEmpty(unparsedDate)) {
 				
 				Date date = dateProvider.fromString(unparsedDate);
 				String path = requestContext.getUriInfo().getPath();
@@ -45,7 +44,6 @@ public class CacheInterceptor implements ContainerRequestFilter, ContainerRespon
 					
 					Response response = Response.status(Status.NOT_MODIFIED).build();
 					requestContext.abortWith(response);
-					return;
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package br.com.brejaonline.services;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.UUID;
@@ -56,15 +57,17 @@ public class EmailServiceInterop {
 
 		calendar.add(Calendar.SECOND, 21); //Tempo do Thread.sleep + tempo para gerar o email 
 
+		URI uri = UriBuilder
+				.fromPath("/cervejaria/services")
+				.path(EmailServiceInterop.class)
+				.path("/{id}")
+				.build(emailId);
+		
+		Link link = Link.fromUri(uri).build();
+		
 		return Response
 				.accepted()
-				.header("Location",
-						Link.fromUri(
-								UriBuilder
-										.fromPath("/cervejaria/services")
-										.path(EmailServiceInterop.class)
-										.path("/{id}").build(emailId)).build()
-								.getUri())
+				.header("Location", link.getUri())
 				.header("Expires", calendar.getTime())
 				.build();
 	}
