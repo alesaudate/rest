@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resourceDoc>
+	<classDocs>
+		<classDoc>
+			<className>br.com.geladaonline.services.CervejaService</className>
+			<commentText><![CDATA[Gerencia todas as cervejas do sistema.]]>
+			</commentText>
+			<methodDocs>
+				<methodDoc>
+					<methodName>listeTodasAsCervejas</methodName>
+					<commentText><![CDATA[Lista as cervejas catalogadas]]></commentText>
+					
+					<responseDoc>						
+						<representations>
+							<representation element="cervejas" status="200"
+								mediaType="text/xml,application/xml,application/json">								
+								<doc>Esta é a representação padrão</doc>
+							</representation>
+						</representations>
+					</responseDoc>
+				</methodDoc>
+				<methodDoc>
+					<methodName>encontreCerveja</methodName>
+					<commentText><![CDATA[Localiza uma determinada cerveja em particular]]></commentText>
+					<responseDoc>						
+						<representations>
+							<representation element="cerveja" status="200"
+								mediaType="text/xml,application/xml,application/json">								
+								<doc>Este é o retorno padrão</doc>
+							</representation>
+							<representation status="404">
+								<doc>Retornado caso a cerveja em questão não seja encontrada.</doc>
+							</representation>
+						</representations>
+					</responseDoc>
+				</methodDoc>
+				
+			</methodDocs>
+		</classDoc>		
+	</classDocs>
+</resourceDoc>

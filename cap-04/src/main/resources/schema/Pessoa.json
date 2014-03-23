@@ -1,0 +1,22 @@
+{
+   "title":"Pessoa",
+   "type":"object",
+   "additionalProperties": false,
+   "properties":{
+      "nome": {
+         "type":"string"      
+      },
+      "endereco":{
+         "type":"object",
+         "additionalProperties": false,
+         "properties":{
+            "cep":{
+               "type":"string"
+            },
+            "logradouro":{
+               "type":"string"
+            }
+         }
+      }
+   }
+}

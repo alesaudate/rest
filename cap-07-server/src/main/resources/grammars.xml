@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<grammars xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xi="http://www.w3.org/1999/XML/xinclude">
+
+	<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+		<xs:element name="cerveja" type="cerveja" />
+
+		<xs:element name="cervejas" type="cervejas" />
+
+		<xs:complexType name="cervejas">
+			<xs:sequence>
+				<xs:element name="link" type="jaxbLink" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+
+		<xs:complexType name="jaxbLink">
+			<xs:sequence />
+			<xs:attribute name="href" type="xs:string" />
+			<xs:anyAttribute namespace="##other" processContents="skip" />
+		</xs:complexType>
+
+		<xs:complexType name="cerveja">
+			<xs:sequence>
+				<xs:element name="nome" type="xs:string" minOccurs="0" />
+				<xs:element name="descricao" type="xs:string" minOccurs="0" />
+				<xs:element name="cervejaria" type="xs:string" minOccurs="0" />
+				<xs:element name="tipo" type="tipo" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+
+		<xs:simpleType name="tipo">
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="LAGER" />
+				<xs:enumeration value="PILSEN" />
+				<xs:enumeration value="BOCK" />
+				<xs:enumeration value="WEIZEN" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:schema>
+
+
+</grammars>

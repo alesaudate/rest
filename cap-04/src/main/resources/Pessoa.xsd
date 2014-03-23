@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://brejaonline.com.br/pessoa/v1"
+	elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns="http://brejaonline.com.br/pessoa/v1"
+	xmlns:end="http://brejaonline.com.br/endereco/v1">
+	
+	<import namespace="http://brejaonline.com.br/endereco/v1" schemaLocation="Endereco.xsd" />
+	
+	<simpleType name="CPF">
+		<restriction base="string">
+			<pattern value="\d{3}\.\d{3}\.\d{3}-\d{2}" />
+		</restriction>
+	</simpleType>
+	
+	<complexType name="Pessoa" abstract="true">
+		<sequence>
+			<element name="nome" type="string" />
+			<element name="endereco" type="end:Endereco" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="long" />
+	</complexType>
+	
+	<complexType name="PessoaFisica">
+		<complexContent>		
+			<extension base="tns:Pessoa">				
+				<sequence>
+					<element name="cpf" type="tns:CPF" />
+				</sequence>				
+			</extension>			
+		</complexContent>
+	</complexType>
+	
+	<element name="pessoaFisica" type="tns:PessoaFisica" />
+	
+</schema>
