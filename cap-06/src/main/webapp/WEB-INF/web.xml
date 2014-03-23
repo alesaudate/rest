@@ -5,12 +5,20 @@
 
 
 	<servlet>
+<<<<<<< HEAD
 		<servlet-name>br.com.geladaonline.services.ApplicationJAXRS</servlet-name>
+=======
+		<servlet-name>br.com.brejaonline.services.ApplicationJAXRS</servlet-name>
+>>>>>>> b12de1eff73d2f1debec927a4bc92bfb29588aa5
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
+<<<<<<< HEAD
 		<servlet-name>br.com.geladaonline.services.ApplicationJAXRS</servlet-name>
+=======
+		<servlet-name>br.com.brejaonline.services.ApplicationJAXRS</servlet-name>
+>>>>>>> b12de1eff73d2f1debec927a4bc92bfb29588aa5
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 </web-app>
