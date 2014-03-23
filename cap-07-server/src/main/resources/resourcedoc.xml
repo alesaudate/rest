@@ -3,11 +3,7 @@
 <resourceDoc>
 	<classDocs>
 		<classDoc>
-<<<<<<< HEAD
 			<className>br.com.geladaonline.services.CervejaService</className>
-=======
-			<className>br.com.brejaonline.services.CervejaService</className>
->>>>>>> b12de1eff73d2f1debec927a4bc92bfb29588aa5
 			<commentText><![CDATA[Gerencia todas as cervejas do sistema.]]>
 			</commentText>
 			<methodDocs>

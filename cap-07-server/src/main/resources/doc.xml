@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <applicationDocs targetNamespace="http://research.sun.com/wadl/2006/10">
-<<<<<<< HEAD
 	<doc xml:lang="pt-BR" title="API geladaonline.com.br">
 		Esta é a documentação oficial da aplicação
 		<a href="http://geladaonline.com.br">geladaonline.com.br</a>
-=======
-	<doc xml:lang="pt-BR" title="API brejaonline.com.br">
-		Esta é a documentação oficial da aplicação
-		<a href="http://brejaonline.com.br">brejaonline.com.br</a>
->>>>>>> b12de1eff73d2f1debec927a4bc92bfb29588aa5
 	</doc>
 </applicationDocs>
