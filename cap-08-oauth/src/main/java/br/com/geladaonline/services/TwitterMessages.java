@@ -53,6 +53,8 @@ public class TwitterMessages {
 		} catch (WebApplicationException ex) {
 			if (ex.getResponse().getStatus() == Response.Status.UNAUTHORIZED
 					.getStatusCode()) {
+				// Indica que o acesso foi revogado pelo usuário e um novo token deve
+				// ser obtido
 
 				String twitterAuthUri = TwitterOAuthFlowService
 						.reissueAuthorization(req, resp);
