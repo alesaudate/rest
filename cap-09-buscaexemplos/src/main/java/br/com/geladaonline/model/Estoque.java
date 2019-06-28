@@ -87,7 +87,7 @@ public class Estoque {
 	}
 
 	public void atualizarCerveja(Cerveja cerveja) {
-		if (this.cervejas.containsKey(cerveja.getNome())) {
+		if (!this.cervejas.containsKey(cerveja.getNome())) {
 			throw new CervejaNaoEncontradaException();
 		}
 		cervejas.put(cerveja.getNome(), cerveja);
